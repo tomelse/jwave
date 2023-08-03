@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import numpy as np
 import pytest
 
@@ -8,6 +9,17 @@ from jwave.geometry import BLISensors, Domain, FourierSeries, bli_function
 def testbli_function(n_grid):
     # Make a load of sensors on the grid. Check the bli function.
     y = bli_function(np.arange(n_grid), np.arange(n_grid), n_grid)
+=======
+from jwave.geometry import _bli_function, BLISensors, Domain, FourierSeries
+import numpy as np
+import pytest
+
+
+@pytest.mark.parametrize("n_grid", [100, 101])
+def test_bli_function(n_grid):
+    # Make a load of sensors on the grid. Check the bli function.
+    y = _bli_function(np.arange(n_grid), np.arange(n_grid), n_grid)
+>>>>>>> b4686d9c22839a9bb756fc553aa5c8801e59de43
     # Assert that the bli function is 1 at one place for each detector.
     assert (np.all(np.sum(y != 0, axis=1) == 1))
     # Assert that the bli function is 0 everywhere else
@@ -16,8 +28,7 @@ def testbli_function(n_grid):
     assert (np.all(y[np.arange(n_grid), np.arange(n_grid)] == 1))
 
     # Check off-grid points:
-    y = bli_function(
-        np.arange(0, n_grid - 1) + 0.25, np.arange(n_grid), n_grid)
+    y = _bli_function(np.arange(0, n_grid - 1) + 0.25, np.arange(n_grid), n_grid)
     # Check that the sensor is non-zero at more than one place.
     assert (np.all(np.sum(y != 0, axis=1) > 1))
     assert (np.all(np.isclose(np.sum(y, axis=1), 1)))
@@ -41,11 +52,11 @@ def test_sensor(nx, ny, nz):
 
     p = np.random.random((nx, ny, nz))
 
-    s1d = BLISensors((x, ), (nx, ))
+    s1d = BLISensors((x,), (nx,))
     s2d = BLISensors((x, y), (nx, ny))
     s3d = BLISensors((x, y, z), (nx, ny, nz))
 
-    domain1d = Domain((nx, ), (1, ))
+    domain1d = Domain((nx,), (1,))
     p1d = FourierSeries(p[:, 0, 0], domain1d)
 
     domain2d = Domain((nx, ny), (1, 1))
@@ -78,7 +89,7 @@ def test_sensor(nx, ny, nz):
 
 
 if __name__ == "__main__":
-    testbli_function(100)
-    testbli_function(101)
+    test_bli_function(100)
+    test_bli_function(101)
     test_sensor()
     test_sensor(100, 101, 102)
